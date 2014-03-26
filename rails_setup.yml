@@ -1,0 +1,8 @@
+- hosts: staging
+  vars_files:
+    - group_vars/all
+
+  roles:
+    - common
+    - web
+    - db
