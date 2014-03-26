@@ -6,8 +6,3 @@ eglantine.bombsheller.com
 
 [develop]
 titica.bombsheller.com
-
-[all:children]
-production
-staging
-development
