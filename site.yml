@@ -1,6 +1,7 @@
 - hosts: staging
+  sudo: true
   vars_files:
-    - group_vars/all
+    - group_vars/all.yml
 
   roles:
     - common
