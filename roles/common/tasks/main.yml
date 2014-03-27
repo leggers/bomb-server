@@ -1,19 +1,23 @@
-- name: Set LANG_ALL in locale file
+- name: ensure LANG_ALL is set in locale file
   sudo: yes
   lineinfile: dest=/etc/default/locale line='LANG_ALL="en_US.UTF-8"'
+  notify:
+    - regenerate locales
 
-- name: set LANGUAGE in locale file
+- name: ensure LANGUAGE is set in locale file
   sudo: yes
   lineinfile: dest=/etc/default/locale line='LANGUAGE="en_US.UTF-8"'
+  notify:
+    - regenerate locales
 
-- name: set LANG in locale file
+- name: ensure LANG is set in locale file
   sudo: yes
   lineinfile: dest=/etc/default/locale line='LANG="en_US.UTF-8"'
+  notify:
+    - regenerate locales
 
-- name: set LC_ALL in locale file
+- name: ensure LC_ALL is set in locale file
   sudo: yes
   lineinfile: dest=/etc/default/locale line='LC_ALL="en_US.UTF-8"'
-
-- name: regenerate locales
-  sudo: yes
-  shell: dpkg-reconfigure locales
+  notify:
+    - regenerate locales

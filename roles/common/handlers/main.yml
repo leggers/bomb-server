@@ -1,0 +1,3 @@
+- name: regenerate locales
+  sudo: yes
+  shell: dpkg-reconfigure locales
