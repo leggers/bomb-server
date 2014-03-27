@@ -1,1 +1,2 @@
 - include: ruby.yml
+- include: deploy.yml
