@@ -12,3 +12,7 @@ rubyUrl: http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.1.tar.gz
 rubyCompressedFile: ruby-2.1.1.tar.gz
 rubyName: ruby-2.1.1
 tmpRubyPath: "{{rubyTmpDir}}/{{rubyName}}"
+
+# db
+db_user: username
+db_password: password # need to set this with obfuscated script call

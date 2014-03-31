@@ -1,0 +1,26 @@
+---
+# inspiration from here: https://gist.github.com/ihassin/8106956
+- name: Install mySQL
+  apt: pkg={{item}} state=installed
+  with_items:
+    - mysql-server
+    - mysql-client
+    - python-mysqldb # so the ansible database setup commands work
+
+- name: Start mySQL
+  service: name=mysql state=started enabled=yes
+
+- name: Remove test database
+  mysql_db: name=test state=absent
+
+- name: Database user setup
+  mysql_user: user={{db_user}} host='%' password={{db_password}} priv=*.*:ALL,GRANT state=present
+
+- name: Ensure anonymous users aren't in database
+  mysql_user: user='' host={{item}} state=absent
+  with_items:
+    - 127.0.0.1
+    - ::1
+    - localhost
+
+# still need to set root password
