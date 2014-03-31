@@ -1,7 +1,6 @@
 - name: Install app dependencies 
   apt: pkg={{item}} state=installed
   with_items:
-    - libpq-dev
     - nodejs
     - imagemagick
 
