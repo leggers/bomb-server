@@ -1,6 +1,6 @@
 ---
 # file: group_vars/all
-ansible_ssh_user: leggers
+# ansible_ssh_user: leggers
 
 # webapp
 deploy_directory: /var/www

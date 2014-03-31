@@ -28,4 +28,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # If true, then any SSH connections made will enable agent forwarding.
   # Default value: false
   config.ssh.forward_agent = true
+
+  # Set up provisioning with Ansible
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = 'site.yml'
+    # ansible.verbose = 'vvvv'
+  end
 end
