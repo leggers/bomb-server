@@ -1,2 +1,3 @@
 - include: ruby.yml
 - include: deploy.yml
+- include: apache-passenger.yml

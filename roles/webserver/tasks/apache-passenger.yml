@@ -1,0 +1,30 @@
+---
+- name: Install apache packages
+  apt: pkg={{item}} state=installed
+  with_items:
+    - libcurl4-openssl-dev
+    - libssl-dev
+    - zlib1g-dev
+    - apache2-mpm-prefork
+    - apache2-prefork-dev
+    - libapr1-dev
+    - libaprutil1-dev
+
+# inspiration: http://www.modrails.com/documentation/Users%20guide%20Apache.html#install_on_debian_ubuntu
+- name: Add passenger keyserver
+  apt_key: url=http://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search=0x3D3B6BD098080A60 state=present
+
+- name: Add HTTPS support for APT
+  apt: pkg={{item}} state=installed
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+
+- name: Copy passenger.list
+  copy: src=../files/passenger.list dest=/etc/apt/sources.list.d/passenger.list owner=root mode=600
+
+- name: Update apt
+  apt: upgrade=yes update_cache=yes
+
+- name: Install passenger package
+  apt: pkg=libapache2-mod-passenger state=installed force=yes install_recommends=yes
