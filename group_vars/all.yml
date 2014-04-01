@@ -4,7 +4,7 @@
 
 # webapp
 deploy_directory: /var/www
-app_names: [store, artemix]
+app_names: [shop, artemix]
 
 # ruby
 rubyTmpDir: /usr/local/src

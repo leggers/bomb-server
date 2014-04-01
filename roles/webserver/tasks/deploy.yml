@@ -17,7 +17,7 @@
   file: path={{deploy_directory}}/{{item[0]}}/shared/{{item[1]}} group=deploy owner=deploy state=directory
   with_nested:
     - app_names
-    - [ tmp, log, public, bundle, bin, config, config/puma ]
+    - [ tmp, log, public, bundle, bin, config ]
   tags: shared
 
 - name: Install database.yml
