@@ -45,4 +45,4 @@
   command: make install chdir={{tmpRubyPath}} creates=/usr/local/bin/ruby
 
 - name: Install Bundler
-  gem: name=bundler state=latest
+  gem: name=bundler state=present
