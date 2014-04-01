@@ -21,4 +21,5 @@
   tags: shared
 
 - name: Install database.yml
-  template: src=database.yml.j2 dest={{deploy_directory}}/shared/config/database.yml force=yes mode=755 owner=deploy
+  template: src=database.yml.j2 dest={{deploy_directory}}/{{item}}/shared/config/database.yml force=yes mode=755 owner=deploy
+  with_items: app_names

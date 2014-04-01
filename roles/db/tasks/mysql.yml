@@ -23,4 +23,8 @@
     - ::1
     - localhost
 
+- name: Setup databases
+  mysql_db: name=bomb_{{item}}_{{group_names[0]}} state=present
+  with_items: app_names
+
 # still need to set root password
