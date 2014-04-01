@@ -1,4 +1,3 @@
----
 - name: Install apache packages
   apt: pkg={{item}} state=installed
   with_items:
@@ -28,3 +27,15 @@
 
 - name: Install passenger package
   apt: pkg=libapache2-mod-passenger state=installed force=yes install_recommends=yes
+
+- name: Ensure apache app config files are present
+  template: src=../templates/apache-config.j2 dest=/etc/apache2/sites-available/{{item}}
+  with_items: app_names
+  notify:
+    - restart apache
+
+- name: Ensure apache config files are symlinked
+  file: src=/etc/apache2/sites-available/{{item}} dest=/etc/apache2/sites-enabled/{{item}}
+  with_items: app_names
+  notify
+    - reload apache
