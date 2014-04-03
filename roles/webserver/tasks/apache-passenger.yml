@@ -1,4 +1,4 @@
-- name: Install apache packages
+- name: Ensure apache packages are installed
   apt: pkg={{item}} state=installed
   with_items:
     - libcurl4-openssl-dev
@@ -25,8 +25,8 @@
 - name: Update apt
   apt: upgrade=yes update_cache=yes
 
-- name: Install passenger package
-  apt: pkg=libapache2-mod-passenger state=installed force=yes install_recommends=yes
+- name: Ensure passenger apache package is installed
+  apt: pkg=libapache2-mod-passenger
 
 - name: Ensure apache app config files are present
   template: src=../templates/apache-config.j2 dest=/etc/apache2/sites-available/{{item}}.conf

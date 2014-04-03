@@ -44,5 +44,5 @@
 - name: ruby-from-src | ensure ruby is installed
   command: make install chdir={{tmpRubyPath}} creates=/usr/local/bin/ruby
 
-- name: Install Bundler
-  gem: name=bundler state=present
+- name: Ensure bundler is installed
+  apt: pkg=bundler
