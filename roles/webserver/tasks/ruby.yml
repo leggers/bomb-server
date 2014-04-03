@@ -45,7 +45,7 @@
   command: make install chdir={{tmpRubyPath}} creates=/usr/local/bin/ruby
 
 - name: Ensure bundler is installed
-  gem: name=bundler
+  gem: name=bundler user_install=no
 
 - name: Ensure rails is installed
-  gem: name=rails
+  gem: name=rails user_install=no
