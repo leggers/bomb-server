@@ -26,13 +26,16 @@
   apt: pkg=libapache2-mod-passenger force=yes
 
 - name: Ensure apache app config files are present
-  template: src=apache-config.j2 dest=/etc/apache2/sites-available/{{item}}.conf owner=deploy group=deploy
+  template: src=apache-config.j2 dest=/etc/apache2/sites-available/{{item}}.conf
   with_items: app_names
   notify:
     - restart apache
 
 - name: Ensure apache config files are symlinked
-  file: src=/etc/apache2/sites-available/{{item}} dest=/etc/apache2/sites-enabled/{{item}}.conf
+  file: src=/etc/apache2/sites-available/{{item}}.conf dest=/etc/apache2/sites-enabled/{{item}}.conf
   with_items: app_names
   notify:
     - reload apache
+
+- name: Ensure default apache site is disabled
+  file: dest=/etc/apache2/sites-enabled/*default* state=absent
