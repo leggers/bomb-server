@@ -26,10 +26,10 @@
   apt: upgrade=yes update_cache=yes
 
 - name: Ensure passenger apache package is installed
-  apt: pkg=libapache2-mod-passenger
+  apt: pkg=libapache2-mod-passenger force=yes
 
 - name: Ensure apache app config files are present
-  template: src=../templates/apache-config.j2 dest=/etc/apache2/sites-available/{{item}}.conf
+  template: src=apache-config.j2 dest=/etc/apache2/sites-available/{{item}}.conf
   with_items: app_names
   notify:
     - restart apache
