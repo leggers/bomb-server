@@ -1,5 +1,5 @@
 - name: Ensure apache packages are installed
-  apt: pkg={{item}} state=installed
+  apt: pkg={{item}}
   with_items:
     - libcurl4-openssl-dev
     - libssl-dev
@@ -14,7 +14,7 @@
   apt_key: url=http://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search=0x3D3B6BD098080A60 state=present
 
 - name: Add HTTPS support for APT
-  apt: pkg={{item}} state=installed
+  apt: pkg={{item}}
   with_items:
     - apt-transport-https
     - ca-certificates

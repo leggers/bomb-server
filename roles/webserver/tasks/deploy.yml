@@ -1,5 +1,5 @@
 - name: Install app dependencies 
-  apt: pkg={{item}} state=installed
+  apt: pkg={{item}}
   with_items:
     - nodejs
     - imagemagick

@@ -1,7 +1,7 @@
 ---
 # inspiration from here: https://gist.github.com/ihassin/8106956
 - name: Install mySQL
-  apt: pkg={{item}} state=installed
+  apt: pkg={{item}}
   with_items:
     - mysql-server
     - mysql-client

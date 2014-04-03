@@ -5,7 +5,7 @@
   apt: upgrade=yes update_cache=yes
 
 - name: Install ruby dependencies
-  apt: pkg={{item}} state=installed
+  apt: pkg={{item}}
   with_items:
     - build-essential
     - automake
