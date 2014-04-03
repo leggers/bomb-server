@@ -5,6 +5,7 @@
   with_items:
     - mysql-server
     - mysql-client
+    - libmysqlclient-dev # for mysql2 gem installation
     - python-mysqldb # so the ansible database setup commands work
 
 - name: Start mySQL
