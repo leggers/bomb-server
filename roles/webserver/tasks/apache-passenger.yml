@@ -22,9 +22,6 @@
 - name: Copy passenger.list
   copy: src=../files/passenger.list dest=/etc/apt/sources.list.d/passenger.list owner=root mode=600
 
-- name: Update apt
-  apt: upgrade=yes update_cache=yes
-
 - name: Ensure passenger apache package is installed
   apt: pkg=libapache2-mod-passenger force=yes
 
