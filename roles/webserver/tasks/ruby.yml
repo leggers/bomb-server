@@ -1,9 +1,6 @@
 ---
 # Installs ruby from source
 
-- name: Upgrade apt
-  apt: upgrade=yes update_cache=yes
-
 - name: Install ruby dependencies
   apt: pkg={{item}}
   with_items:
@@ -24,25 +21,44 @@
     - libsqlite3-dev
     - libxml2-dev
     - libxslt1-dev
+    - libgdbm-dev
+    - libncurses5-dev
+    - libtool
+    - libffi-dev
 
 # Install correct version of ruby from source
-- name: ruby-from-src | ensure directory temporary ruby download directory is present
-  file: state=directory path={{rubyTmpDir}}
+# - name: ruby-from-src | ensure directory temporary ruby download directory is present
+#   file: state=directory path={{rubyTmpDir}}
 
-- name: ruby-from-src | Download ruby source 
-  get_url: url={{rubyUrl}} dest={{rubyTmpDir}}
+# - name: ruby-from-src | Download ruby source 
+#   get_url: url={{rubyUrl}} dest={{rubyTmpDir}}
 
-- name: ruby-from-src | ensure ruby is extracted
-  command: tar -xf {{rubyCompressedFile}} chdir={{rubyTmpDir}} creates={{tmpRubyPath}}
+# - name: ruby-from-src | ensure ruby is extracted
+#   command: tar -xf {{rubyCompressedFile}} chdir={{rubyTmpDir}} creates={{tmpRubyPath}}
 
-- name: ruby-from-src | ensure ruby is configured
-  command: ./configure chdir={{tmpRubyPath}} creates={{tmpRubyPath}}/Makefile
+# - name: ruby-from-src | ensure ruby is configured
+#   command: ./configure chdir={{tmpRubyPath}} creates={{tmpRubyPath}}/Makefile
 
-- name: ruby-from-src | ensure ruby is compiled
-  command: make chdir={{tmpRubyPath}} creates={{tmpRubyPath}}/ruby
+# - name: ruby-from-src | ensure ruby is compiled
+#   command: make chdir={{tmpRubyPath}} creates={{tmpRubyPath}}/ruby
 
-- name: ruby-from-src | ensure ruby is installed
-  command: make install chdir={{tmpRubyPath}} creates=/usr/local/bin/ruby
+# - name: ruby-from-src | ensure ruby is installed
+#   command: make install chdir={{tmpRubyPath}} creates={{finalRubyPath}}
+
+- name: install rvm
+  shell: \curl -L https://get.rvm.io | bash -s stable --autolibs=3 creates=~/.rvm
+  remote_user: deploy
+  sudo: no
+
+- name: ensure rvm is loaded into the shell
+  shell: source ~/.rvm/scripts/rvm
+  remote_user: deploy
+  sudo: no
+
+- name: install ruby
+  shell: ~/.rvm/bin/rvm install --default {{ ruby }} creates=~/.rvm/rubies/{{ ruby }}
+  remote_user: deploy
+  sudo: no
 
 - name: Ensure bundler is installed
   command: "sudo gem install bundler"
