@@ -1,13 +1,30 @@
+---
+
+- name: Upgrade apt
+  apt: upgrade=yes update_cache=yes
+
 - name: Install app dependencies 
   apt: pkg={{item}}
   with_items:
     - nodejs
     - imagemagick
 
+- name: Create deployment group
+  group: name=deploy
+
 - name: Create deployment user
-  user: name=deploy comment="Application deployment user"
+  user: name=deploy group=deploy comment="Application deployment user"
 
 - authorized_key: user=deploy key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+- name: Deploy user's bashrc
+  copy: dest=/home/deploy/.bashrc src=bashrc.txt owner=deploy group=deploy
+
+- name: Deploy user's bash_profile
+  copy: dest=/home/deploy/.bash_profile src=bash_profile.txt owner=deploy group=deploy
+
+- name: Deploy user use bash
+  shell: chsh -s {{ansible_env.SHELL}} deploy
 
 - name: Create deployment directory
   file: path={{deploy_directory}}/{{item}} owner=deploy group=deploy state=directory
