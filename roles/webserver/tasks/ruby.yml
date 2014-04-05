@@ -25,6 +25,8 @@
     - libncurses5-dev
     - libtool
     - libffi-dev
+    - gawk
+    - sqlite3
 
 # Install correct version of ruby from source
 # - name: ruby-from-src | ensure directory temporary ruby download directory is present
@@ -46,19 +48,14 @@
 #   command: make install chdir={{tmpRubyPath}} creates={{finalRubyPath}}
 
 - name: install rvm
-  shell: \curl -L https://get.rvm.io | bash -s stable --autolibs=3 creates=~/.rvm
-  remote_user: deploy
-  sudo: no
-
-- name: ensure rvm is loaded into the shell
-  shell: source ~/.rvm/scripts/rvm
+  shell: \curl -L https://get.rvm.io | bash -s stable creates=~/.rvm
   remote_user: deploy
   sudo: no
 
 - name: install ruby
-  shell: ~/.rvm/bin/rvm install --default {{ ruby }} creates=~/.rvm/rubies/{{ ruby }}
-  remote_user: deploy
-  sudo: no
+  shell: /home/deploy/.rvm/bin/rvm install --default {{ ruby }} creates=/home/deploy/.rvm/rubies/ruby-{{ ruby }}
 
 - name: Ensure bundler is installed
-  command: "sudo gem install bundler"
+  gem: name=bundler
+  remote_user: deploy
+  sudo: no

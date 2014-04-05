@@ -32,7 +32,7 @@
     - restart apache
 
 - name: Ensure apache config files are symlinked
-  file: src=/etc/apache2/sites-available/{{item}}.conf dest=/etc/apache2/sites-enabled/{{item}}.conf
+  file: src=/etc/apache2/sites-available/{{item}}.conf dest=/etc/apache2/sites-enabled/{{item}}.conf state=link
   with_items: app_names
   notify:
     - reload apache
