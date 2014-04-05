@@ -22,6 +22,9 @@
 - name: Copy passenger.list
   copy: src=../files/passenger.list dest=/etc/apt/sources.list.d/passenger.list owner=root mode=600
 
+- name: Ensure passenger's distrobution server is in apt
+  apt: upgrade=yes update_cache=yes
+
 - name: Ensure passenger apache package is installed
   apt: pkg=libapache2-mod-passenger force=yes
 
@@ -38,4 +41,4 @@
     - reload apache
 
 - name: Ensure default apache site is disabled
-  file: dest=/etc/apache2/sites-enabled/*default* state=absent
+  file: dest=/etc/apache2/sites-enabled/000-default.conf state=absent
