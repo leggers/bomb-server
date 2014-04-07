@@ -1,4 +1,4 @@
-<VirtualHost _default_:80>
+<VirtualHost *:80>
     ServerAlias {{group_names[0]}}{{item}}.bombsheller.com
     DocumentRoot /var/www/{{item}}/current/public/
     <Directory /var/www/{{item}}/current/public>
