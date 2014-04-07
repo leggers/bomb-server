@@ -18,7 +18,7 @@
 - authorized_key: user=deploy key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
 
 - name: Deploy user's bashrc
-  copy: dest=/home/deploy/.bashrc src=bashrc.txt owner=deploy group=deploy
+  template: dest=/home/deploy/.bashrc src=bashrc.j2 owner=deploy group=deploy
 
 - name: Deploy user's bash_profile
   copy: dest=/home/deploy/.bash_profile src=bash_profile.txt owner=deploy group=deploy
