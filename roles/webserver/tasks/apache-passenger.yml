@@ -10,26 +10,45 @@
     - libaprutil1-dev
 
 # inspiration: http://www.modrails.com/documentation/Users%20guide%20Apache.html#install_on_debian_ubuntu
-- name: Add passenger keyserver
-  apt_key: url=http://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search=0x3D3B6BD098080A60 state=present
+- name: install passenger gem
+  shell: gem install passenger --version {{passenger_version}} creates=~/.rvm/rubies/ruby-{{ruby}}/bin/passenger executable=/bin/bash
+  remote_user: deploy
+  sudo: no
 
-- name: Add HTTPS support for APT
-  apt: pkg={{item}}
+# - name: get passenger version
+#   shell: passenger -v
+#   register: passenger_shell_output
+#   remote_user: deploy
+#   sudo: no
+
+# - name: set passenger version
+#   set_fact:
+#     passenger_version: "{{passenger_shell_output.stdout_lines[0] | regex_replace('\D* ', '') | regex_replace(',', '')}}"
+
+# - name: write ansible version to a file
+#   lineinfile: create=yes state=present line={{passenger_version}} dest=~/passenger_version.txt
+#   remote_user: deploy
+#   sudo: no
+
+- name: install passenger mod
+  command: rvm {{ruby}} do passenger-install-apache2-module --auto creates=~/.rvm/gems/ruby-{{ruby}}@global/gems/passenger-{{passenger_version}}/buildout/apache2/mod_passenger.so
+  remote_user: deploy
+  sudo: no
+
+- name: configure apache and passenger
+  template: src=passenger-{{item}}-config.j2 dest=/etc/apache2/mods-available/passenger.{{item}} owner=deploy group=deploy
   with_items:
-    - apt-transport-https
-    - ca-certificates
+    - load
+    - conf
 
-- name: Copy passenger.list
-  copy: src=../files/passenger.list dest=/etc/apt/sources.list.d/passenger.list owner=root mode=600
-
-- name: Ensure passenger's distrobution server is in apt
-  apt: upgrade=yes update_cache=yes
-
-- name: Ensure passenger apache package is installed
-  apt: pkg=libapache2-mod-passenger force=yes
+- name: enable passenger
+  file: src=/etc/apache2/mods-available/passenger.{{item}} dest=/etc/apache2/mods-enabled/passenger.{{item}}
+  with_items:
+    - load
+    - conf
 
 - name: Ensure apache app config files are present
-  template: src=apache-config.j2 dest=/etc/apache2/sites-available/{{item}}.conf
+  template: src=apache-config.j2 dest=/etc/apache2/sites-available/{{item}}.conf owner=deploy group=deploy
   with_items: app_names
   notify:
     - restart apache
