@@ -68,6 +68,8 @@ The `file` and `template` directives look in the `file` and `template` directori
 
 4) The database is setup.
 
+# Notes
+
 You will notice, especially for setting up RVM, Ruby, and Passenger, that I use the `shell` module quite a bit, which seems to defeat the purpose of using idempotent modules because it simply executes whatever command is passed to it.
 However, I strive to make them more robust (and not repeat themselves unnecessarilty) by using the `creates` option, which specifies a file or folder that should be created by the command.
 It is that trick which really differentiates that setup from a shell script.
