@@ -14,6 +14,9 @@ rubyCompressedFile: ruby-2.1.1.tar.gz
 rubyName: ruby-2.1.1
 tmpRubyPath: "{{rubyTmpDir}}/{{rubyName}}"
 
+# passenger
+passenger_version: 4.0.40
+
 # db
 db_user: username
 db_password: password # need to set this with obfuscated script call
