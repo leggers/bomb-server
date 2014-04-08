@@ -47,6 +47,7 @@ In English, this says "Ansible, run the playbook in `site.yml` against the hosts
 ## Order of playbook operations
 
 Order of operations (you can follow along by opening `site.yml` and following the chain of execution to see how the flow works) is as follows:
+(Note: it might be easiest to start by reading the common and database playbooks before trying to tackle the webserver ones.)
 
 1) The first few lines of the `site.yml` are configuration.
 Ansible will run against all hosts and use sudo unless told otherwise in the playbook or on the command line.
@@ -67,6 +68,8 @@ The `authorized_key` directive copies an SSH key *from the local machine*.
 The `file` and `template` directives look in the `file` and `template` directories of that role, respectively, for the files or templates listed.
 
 4) The database is setup.
+This is a very standard MySQL setup, installing requisite packages, setting up user accounts and ensuring databases are created.
+If you made it through the webserver playbooks this should be a piece of cake.
 
 # Notes
 
