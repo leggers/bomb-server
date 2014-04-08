@@ -35,7 +35,6 @@
   with_nested:
     - app_names
     - [ tmp, log, public, bundle, bin, config ]
-  tags: shared
 
 - name: Install database.yml
   template: src=database.yml.j2 dest={{deploy_directory}}/{{item}}/shared/config/database.yml force=yes mode=755 owner=deploy group=deploy
