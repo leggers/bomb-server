@@ -8,42 +8,45 @@ Bomb Server Setup
 * [RVM](rvm.io) (really?)
 * [Phusion Passenger aka mod_rails](phusionpassenger.com/) (are you serious?!)
 
-There is nothing particularly notable about this server setup for production Rails apps, however doing it with Ansible was not something I found while doing some serious googling doing my development of this playbook.
+There is nothing particularly notable about this server setup for production Rails apps, however doing it with Ansible was not something I found during my serious googling while developing this playbook.
 The only setup required on the server is Ubuntu 13.10 with a user to which one can SSH that has password-less sudo privileges.
 I wrote this to set up [Bombsheller's](http://shop.bombsheller.com/) VMs.
 
 # Overview and Ansible Background
 
 First, a short overview of how playbooks work (you can read more about them [in their documentation](http://docs.ansible.com/playbooks.html)):
-An Ansible playbook is a series of `tasks` organized into `roles` to be executed over SSH using YAML syntax against a set of `hosts` organized into `groups`.
+An Ansible playbook is a series of server configuration `tasks` organized into `roles` to be executed over SSH using YAML syntax against a set of `hosts` organized into `groups`.
 
 Wait, what?
 
 In Ansible, you specify lists of `hosts`, or servers (like EC2 instances, or the server you have spinning in your basement), and organize them into `groups` (by, say, server purpose or geography). You can then choose with a high degree of precision exactly **which** servers you are configuring.
 
-You then tell Ansible how to configure the various parts of your IT setup using `roles`, or a server's functional purpose (say, database, or webserver). This allows you to control with a high degree of precision exactly **what** is installed on each server.
+You then tell Ansible how to configure the various parts of your IT setup using lists of `tasks` (like installing packages or copying config files), and organize them into `roles` (say, database, or webserver). This allows you to control with a high degree of precision exactly **what** commands are executed on each server.
 
 Tasks are organized into a certain file structure to denote and delimit `roles`.
 A typical task is `apt: pkg=curl`.
 As you can imagine, this uses [APT](http://en.wikipedia.org/wiki/Advanced_Packaging_Tool) to install the `curl` package.
 Generic task syntax is `<module>: <options>` (with other other options possibly being on the next lines).
+A `playbook` consists of a list of `tasks` or list of files to be executed.
+They are run from top to bottom.
+
 The great part about Ansible is that if `curl` is already installed, it will do nothing!
-Another way to say that is Ansible strives to be *idemopotent*, meaning running the same playbook over and over again should yield the same results.
-From a sysadmin perspective, this is incredible because it acts as something that *ensures* your server is properly setup in a human-readable way, instead of relying on the shell scripts and saavy.
+Another way to say that is Ansible strives to be **idemopotent**, meaning running the same playbook over and over again should yield the same results (i.e. a configured server will stay configured).
+From a sysadmin perspective, this is incredible because it acts as something that **ensures** your server is properly setup in a human-readable way (YAML), instead of relying on the shell scripts and saavy.
 [Here's a list of all modules](http://docs.ansible.com/list_of_all_modules.html).
 It is often handy to keep that page open while dealing with playbooks.
 
-Ansible also has the capacity to copy over files, even inserting arbitrary information (!) using [templates](http://docs.ansible.com/template_module.html) and [variables](http://docs.ansible.com/playbooks_variables.html), so your site- and machine-specific configuration can be automated as well. Pretty awesome.
+Ansible also has the ability to copy over files, even inserting arbitrary information (!) using [templates](http://docs.ansible.com/template_module.html) and [variables](http://docs.ansible.com/playbooks_variables.html), so your site- and machine-specific configuration can be automated as well. Pretty awesome.
 
 # This Playbook
 
-Anyway, enough about Ansible, onto what happens in our playbooks.
+Anyway, enough about Ansible, onto what happens in our playbook.
 How to use this playbook: `ansible-playbook site.yml -i hosts -l staging`.
 In English, this says "Ansible, run the playbook in `site.yml` against the hosts listed in the file `hosts` in the group `staging`."
 
-### Order of playbook operations
+## Order of playbook operations
 
-(You can follow along by opening `site.yml` and following the chain of file calls to see how the flow works) is as follows:
+Order of operations (you can follow along by opening `site.yml` and following the chain of execution to see how the flow works) is as follows:
 
 1) The first few lines of the `site.yml` are configuration.
 Ansible will run against all hosts and use sudo unless told otherwise in the playbook or on the command line.
