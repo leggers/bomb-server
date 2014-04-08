@@ -32,7 +32,7 @@ They are run from top to bottom.
 
 The great part about Ansible is that if `curl` is already installed, it will do nothing!
 Another way to say that is Ansible strives to be **idemopotent**, meaning running the same playbook over and over again should yield the same results (i.e. a configured server will stay configured).
-From a sysadmin perspective, this is incredible because it acts as something that **ensures** your server is properly setup in a human-readable way (YAML), instead of relying on the shell scripts and saavy.
+From a sysadmin perspective, this is incredible because it acts as something that **ensures** your server is properly set up in a human-readable way (YAML), instead of relying on the shell scripts and saavy.
 [Here's a list of all modules](http://docs.ansible.com/list_of_all_modules.html).
 It is often handy to keep that page open while dealing with playbooks.
 
@@ -60,14 +60,14 @@ Common means that it doesn't matter what type of server it is (database, webserv
 Right now, the only common task is to set server locale.
 You'll see the `notice` statment. This calls the task by the same name in the `handlers` folder.
 
-3) The webserver is setup.
+3) The webserver is set up.
 This is by far the most complicated part of the playbook, so its plays are broken into into various files to separate concerns.
 The major concerns are: setting up the `deploy` user account, getting a ruby installation (for which I use RVM in the `deploy` account), and getting a web server set up (for which I use Apache and Passenger).
 You can read through those playbooks to see what they do.
 The `authorized_key` directive copies an SSH key *from the local machine*.
 The `file` and `template` directives look in the `file` and `template` directories of that role, respectively, for the files or templates listed.
 
-4) The database is setup.
+4) The database is set up.
 This is a very standard MySQL setup, installing requisite packages, setting up user accounts and ensuring databases are created.
 If you made it through the webserver playbooks this should be a piece of cake.
 
