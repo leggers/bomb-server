@@ -15,8 +15,15 @@ I wrote this to set up [Bombsheller's](http://shop.bombsheller.com/) VMs.
 # Overview and Ansible Background
 
 First, a short overview of how playbooks work (you can read more about them [in their documentation](http://docs.ansible.com/playbooks.html)):
-An Ansible playbook is a series of tasks to be executed over SSH using YAML syntax against a set of hosts organized into groups.
-Tasks can be organized into a certain file structure to denote and delimit "roles," or what functionality, exactly, you're configuring with the tasks contained.
+An Ansible playbook is a series of `tasks` organized into `roles` to be executed over SSH using YAML syntax against a set of `hosts` organized into `groups`.
+
+Wait, what?
+
+In Ansible, you specify lists of `hosts`, or servers (like EC2 instances, or the server you have spinning in your basement), and organize them into `groups` (by, say, server purpose or geography). You can then choose with a high degree of precision exactly **which** servers you are configuring.
+
+You then tell Ansible how to configure the various parts of your IT setup using `roles`, or a server's functional purpose (say, database, or webserver). This allows you to control with a high degree of precision exactly **what** is installed on each server.
+
+Tasks are organized into a certain file structure to denote and delimit `roles`.
 A typical task is `apt: pkg=curl`.
 As you can imagine, this uses [APT](http://en.wikipedia.org/wiki/Advanced_Packaging_Tool) to install the `curl` package.
 Generic task syntax is `<module>: <options>` (with other other options possibly being on the next lines).
