@@ -33,18 +33,8 @@
   remote_user: deploy
   sudo: no
 
-- name: source rvm
-  shell: source ~/.rvm/scripts/rvm executable=/bin/bash
-  remote_user: deploy
-  sudo: no
-
 - name: install ruby
   shell: ~/.rvm/bin/rvm install --default {{ruby}} creates=~/.rvm/rubies/ruby-{{ruby}} executable=/bin/bash
-  remote_user: deploy
-  sudo: no
-
-- name: ensure dotfiles are properly configured
-  shell: rvm get stable --auto-dotfiles executable=/bin/bash
   remote_user: deploy
   sudo: no
 
