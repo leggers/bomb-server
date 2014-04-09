@@ -10,25 +10,20 @@
     - libaprutil1-dev
 
 # inspiration: http://www.modrails.com/documentation/Users%20guide%20Apache.html#install_on_debian_ubuntu
-- name: install passenger gem
-  shell: gem install passenger --version {{passenger_version}} creates=~/.rvm/rubies/ruby-{{ruby}}/bin/passenger executable=/bin/bash
+- name: get passenger version
+  shell: curl https://www.phusionpassenger.com/download | grep "stable version"
+  register: passenger_shell_output
   remote_user: deploy
   sudo: no
 
-# - name: get passenger version
-#   shell: passenger -v
-#   register: passenger_shell_output
-#   remote_user: deploy
-#   sudo: no
+- name: set passenger version
+  set_fact:
+    passenger_version: '{{passenger_shell_output.stdout.split("stable version: ")[1].split("\n")[0]}}'
 
-# - name: set passenger version
-#   set_fact:
-#     passenger_version: "{{passenger_shell_output.stdout_lines[0] | regex_replace('\D* ', '') | regex_replace(',', '')}}"
-
-# - name: write ansible version to a file
-#   lineinfile: create=yes state=present line={{passenger_version}} dest=~/passenger_version.txt
-#   remote_user: deploy
-#   sudo: no
+- name: install passenger gem
+  shell: gem install passenger --version {{passenger_version}} creates=~/.rvm/gems/ruby-{{ruby}}@global/gems/passenger-{{passenger_version}} executable=/bin/bash
+  remote_user: deploy
+  sudo: no
 
 - name: install passenger mod
   command: rvm {{ruby}} do passenger-install-apache2-module --auto creates=~/.rvm/gems/ruby-{{ruby}}@global/gems/passenger-{{passenger_version}}/buildout/apache2/mod_passenger.so
@@ -36,28 +31,32 @@
   sudo: no
 
 - name: configure apache and passenger
-  template: src=passenger-{{item}}-config.j2 dest=/etc/apache2/mods-available/passenger.{{item}} owner=deploy group=deploy
+  template: src=passenger-{{item}}-config.j2 dest=/etc/apache2/mods-available/passenger.{{item}}
   with_items:
     - load
     - conf
 
 - name: enable passenger
-  file: src=/etc/apache2/mods-available/passenger.{{item}} dest=/etc/apache2/mods-enabled/passenger.{{item}}
+  file: src=/etc/apache2/mods-available/passenger.{{item}} dest=/etc/apache2/mods-enabled/passenger.{{item}} state=link
   with_items:
     - load
     - conf
 
-- name: Ensure apache app config files are present
-  template: src=apache-config.j2 dest=/etc/apache2/sites-available/{{item}}.conf owner=deploy group=deploy
+- name: Ensure log file directories are present
+  file: path=/var/log/apache2/{{item}} state=directory
+  with_items: app_names
+
+- name: Ensure application apache config files are present
+  template: src=apache-config.j2 dest=/etc/apache2/sites-available/{{item}}.conf
   with_items: app_names
   notify:
     - restart apache
 
-- name: Ensure apache config files are symlinked
-  file: src=/etc/apache2/sites-available/{{item}}.conf dest=/etc/apache2/sites-enabled/{{item}}.conf state=link
-  with_items: app_names
-  notify:
-    - reload apache
+# - name: Ensure application apache config files are symlinked (if code is there)
+#   file: src=/etc/apache2/sites-available/{{item}}.conf dest=/etc/apache2/sites-enabled/{{item}}.conf state=link
+#   with_items: app_names
+#   notify:
+#     - reload apache
 
 - name: Ensure default apache site is disabled
   file: dest=/etc/apache2/sites-enabled/000-default.conf state=absent
