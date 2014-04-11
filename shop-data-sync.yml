@@ -1,0 +1,29 @@
+---
+# File: shop-data-sync.yml
+# Purpose: copies store production data to staging and dev servers (as per boss's request)
+
+- hosts: production
+  tasks:
+    - name: sqldump production database
+      mysql_db: name=bomb_shop_prod state=dump target=/home/leggers/prod_dump_{{ansible_date_time.epoch}}.sql
+
+    - name: sync db dump to local
+      synchronize: mode=pull src=~/work/bombsheller/sql_dumps/prod_dump_{{ansible_date_time.epoch}}.sql dest=/home/leggers/prod_dump_{{ansible_date_time.epoch}}.sql
+
+    - name: sync product images to local
+      synchronize: mode=pull dest=~/work/bombsheller/bomb_store/public/spree src=/var/www/shop/shared/public/spree
+
+
+- hosts: non-production
+  tasks:
+    - name: sync production images to remote
+      synchronize: mode=push src=~/work/bombsheller/bomb_store/public/spree dest=/var/www/shop/shared/public/spree
+      remote_user: deploy
+
+    - name: copy database dump to remote
+      copy: src=~/work/bombsheller/sql_dumps/prod_dump_{{ansible_date_time.epoch}}.sql dest=/home/deploy/sql_dumps/prod_dump_{{ansible_date_time.epoch}}.sql owner=deploy group=deploy
+      remote_user: deploy
+
+    - name: import data into remote database
+      mysql_db: name=bomb_shop_{{group_names[0]}} state=import target=/home/deploy/sql_dumps/prod_dump_{{ansible_date_time.epoch}}.sql
+      remote_user: deploy

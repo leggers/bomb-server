@@ -1,11 +1,11 @@
 [production]
-titica.bombsheller.com
+alien.bombsheller.com
 
 [staging]
 eglantine.bombsheller.com
 
 [development]
-alien.bombsheller.com
+titica.bombsheller.com
 
 [vagrant]
 33.33.33.33
