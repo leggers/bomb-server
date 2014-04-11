@@ -8,9 +8,6 @@ app_names: [shop, artemix]
 # ruby
 ruby: 2.1.1
 
-# passenger
-passenger_version: 4.0.40
-
 # db
 db_user: username
 db_password: password # need to set this with obfuscated script call
