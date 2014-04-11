@@ -36,6 +36,6 @@
     - app_names
     - [ tmp, log, public, bundle, bin, config ]
 
-- name: Install database.yml
+- name: Ensure database.yml is configured
   template: src=database.yml.j2 dest={{deploy_directory}}/{{item}}/shared/config/database.yml force=yes mode=755 owner=deploy group=deploy
   with_items: app_names
