@@ -37,7 +37,10 @@
     - conf
 
 - name: enable passenger
-  apache2_module: name=passenger state=present
+  file: src=/etc/apache2/mods-available/passenger.{{item}} dest=/etc/apache2/mods-enabled/passenger.{{item}} state=link
+  with_items:
+    - load
+    - conf
 
 - name: Ensure log file directories are present
   file: path=/var/log/apache2/{{item}} state=directory
