@@ -4,6 +4,7 @@
     ErrorLog /var/log/apache2/{{item}}/error.log
     CustomLog /var/log/apache2/{{item}}/access.log combined
     <Directory /var/www/{{item}}/current/public>
+        RailsEnv {{rails_env}}
         AllowOverride all
         Options -MultiViews
         Order allow,deny

@@ -1,0 +1,4 @@
+---
+# file: group_vars/production
+
+rails_env: production

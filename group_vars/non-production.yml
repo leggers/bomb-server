@@ -1,0 +1,4 @@
+---
+# file: group_vars/non-production
+
+rails_env: development

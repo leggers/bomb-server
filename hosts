@@ -1,8 +1,15 @@
 [production]
-alien.bombsheller.com
+titica.bombsheller.com
 
 [staging]
 eglantine.bombsheller.com
 
-[develop]
-titica.bombsheller.com
+[development]
+alien.bombsheller.com
+
+[vagrant]
+33.33.33.33
+
+[non-production:children]
+staging
+development
