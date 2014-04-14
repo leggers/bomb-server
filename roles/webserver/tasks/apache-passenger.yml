@@ -9,7 +9,7 @@
     - libapr1-dev
     - libaprutil1-dev
 
-# inspiration: http://www.modrails.com/documentation/Users%20guide%20Apache.html#install_on_debian_ubuntu
+# tiny bit of web scraping to ensure we have the latest passenger version installed
 - name: get passenger version
   shell: curl https://www.phusionpassenger.com/download | grep "stable version"
   register: passenger_shell_output
@@ -20,6 +20,7 @@
   set_fact:
     passenger_version: '{{passenger_shell_output.stdout.split("stable version: ")[1].split("\n")[0]}}'
 
+# inspiration: http://www.modrails.com/documentation/Users%20guide%20Apache.html#install_on_debian_ubuntu
 - name: install passenger gem
   shell: gem install passenger --version {{passenger_version}} creates=~/.rvm/gems/ruby-{{ruby}}@global/gems/passenger-{{passenger_version}} executable=/bin/bash
   remote_user: deploy
@@ -51,6 +52,7 @@
   with_items: app_names
   notify:
     - restart apache
+    - reload apache
 
 # - name: Ensure application apache config files are symlinked (if code is there)
 #   file: src=/etc/apache2/sites-available/{{item}}.conf dest=/etc/apache2/sites-enabled/{{item}}.conf state=link
