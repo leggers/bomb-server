@@ -40,3 +40,6 @@
   # see http://docs.ansible.com/mysql_user_module.html
 - name: copy over .my.cnf for ansible idempotency
   template: src=.my.cnf.j2 dest=~/.my.cnf
+
+- name: copy over .my.cnf for deploy user so ansible can connect to database with that user
+  template: src=.my.cnf.j2 dest=/home/deploy/.my.cnf
