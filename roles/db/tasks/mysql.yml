@@ -20,7 +20,7 @@
 - name: Ensure anonymous users aren't in database
   mysql_user: user='' host={{item}} state=absent
   with_items:
-    - {{ansible_hostname}}
+    - "{{ansible_hostname}}"
     - 127.0.0.1
     - ::1
     - localhost
@@ -32,7 +32,7 @@
 - name: set root user's password
   mysql_user: name=root password={{mysql_root_password}} host={{item}}
   with_items:
-    - {{ansible_hostname}}
+    - "{{ansible_hostname}}"
     - 127.0.0.1
     - ::1
     - localhost
