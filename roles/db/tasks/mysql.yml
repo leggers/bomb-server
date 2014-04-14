@@ -20,6 +20,7 @@
 - name: Ensure anonymous users aren't in database
   mysql_user: user='' host={{item}} state=absent
   with_items:
+    - {{ansible_hostname}}
     - 127.0.0.1
     - ::1
     - localhost
@@ -28,4 +29,14 @@
   mysql_db: name=bomb_{{item}}_{{group_names[0]}} state=present
   with_items: app_names
 
-# still need to set root password
+- name: set root user's password
+  mysql_user: name=root password={{mysql_root_password}} host={{item}}
+  with_items:
+    - {{ansible_hostname}}
+    - 127.0.0.1
+    - ::1
+    - localhost
+
+  # see http://docs.ansible.com/mysql_user_module.html
+- name: copy over .my.cnf for ansible idempotency
+  template: src=.my.cnf.j2 dest=~/.my.cnf
