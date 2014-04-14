@@ -7,9 +7,6 @@ eglantine.bombsheller.com
 [development]
 titica.bombsheller.com
 
-[vagrant]
-33.33.33.33
-
 [non-production:children]
 staging
 development
