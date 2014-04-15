@@ -1,0 +1,5 @@
+---
+# File: group_vars/ungrouped
+
+ansible_ssh_user: deploy
+rails_env: development

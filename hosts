@@ -1,13 +1,13 @@
 [production]
-alien.bombsheller.com
+titica.bombsheller.com
 
 [staging]
 eglantine.bombsheller.com
 
 [development]
-titica.bombsheller.com
+alien.bombsheller.com
 
-[vagrant]
+[ungrouped] # actually vagrant, but called ungrouped to make database import work
 33.33.33.33
 
 [non-production:children]
