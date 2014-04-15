@@ -4,7 +4,7 @@ Bomb Server Setup
 ## [Ansible](http://docs.ansible.com/index.html) playbooks that set up a bomb-ass server for deploying Ruby on Rails apps using:
 
 * A handy-dandy [Vagrant](vagrantup.com) box for testing
-* An unprivileged "deploy" user (cool)
+* An unprivileged "deploy" user to run the app (cool)
 * [RVM](rvm.io) (really?)
 * [Phusion Passenger aka mod_rails](phusionpassenger.com/) (are you serious?!)
 
@@ -31,32 +31,39 @@ A `playbook` consists of a list of `tasks` or list of files to be executed.
 They are run from top to bottom.
 
 The great part about Ansible is that if `curl` is already installed, it will do nothing!
-Another way to say that is Ansible strives to be **idemopotent**, meaning running the same playbook over and over again should yield the same results (i.e. a configured server will stay configured).
+Another way to say that is Ansible strives to be **idemopotent**, meaning running the same playbook over and over again should yield the same results (i.e. a configured server will stay properly configured).
 From a sysadmin perspective, this is incredible because it acts as something that **ensures** your server is properly set up in a human-readable way (YAML), instead of relying on the shell scripts and saavy.
-[Here's a list of all modules](http://docs.ansible.com/list_of_all_modules.html).
+[Here's a list of all ansible modules](http://docs.ansible.com/list_of_all_modules.html).
 It is often handy to keep that page open while dealing with playbooks.
 
 Ansible also has the ability to copy over files, even inserting arbitrary information (!) using [templates](http://docs.ansible.com/template_module.html) and [variables](http://docs.ansible.com/playbooks_variables.html), so your site- and machine-specific configuration can be automated as well. Pretty awesome.
 
-# This Playbook
+# These Playbooks
 
-Anyway, enough about Ansible, onto what happens in our playbook.
-How to use this playbook: `ansible-playbook site.yml -i hosts -l staging`.
+Anyway, enough about Ansible, onto what happens in our playbooks.
+There are two playbooks which encapsulate distinct tasks:
+1) `site.yml` sets up a VM to serve a Ruby on Rails app using mod_rails and mySQL;
+2) `shop-data-sync.yml` is used to sync the database and product image assets from the production server to Bombsheller's staging and development environments.
+How to use the playbooks:
+1) `ansible-playbook site.yml -i hosts -l staging`.
 In English, this says "Ansible, run the playbook in `site.yml` against the hosts listed in the file `hosts` in the group `staging`."
+2) `ansible-playbook -i hosts shop-data-sync.yml`
+This says to run the `shop-data-sync.yml` playbook against all hosts in the hosts file.
+If you look in the playbook you will see how it handles switching between the produciton and non-production hosts.
 
-## Order of playbook operations
+## Order of playbook operations for `site.yml`
 
 Order of operations (you can follow along by opening `site.yml` and following the chain of execution to see how the flow works) is as follows:
 (Note: it might be easiest to start by reading the common and database playbooks before trying to tackle the webserver ones.)
 
 1) The first few lines of the `site.yml` are configuration.
 Ansible will run against all hosts and use sudo unless told otherwise in the playbook or on the command line.
-Ansible then looks in the file indicated to get some values for variables to be used later in the playbook.
+Ansible then looks in the files indicated to get some values for variables to be used later in the playbook.
 For every listed item under `roles:`, Ansible looks in the `roles` folder for a folder of the same name.
 It then executes the tasks listed in the `tasks` folder, starting with the file `main.yml`.
 
-2) All common tasks are executed.
-Common means that it doesn't matter what type of server it is (database, webserver, whatever), these configurations should be ensured.
+2) All tasks are executed for the `common` role.
+Common means that it doesn't matter what type of server it is (database, webserver, whatever); these configurations should be ensured.
 Right now, the only common task is to set server locale.
 You'll see the `notice` statment. This calls the task by the same name in the `handlers` folder.
 
@@ -66,14 +73,33 @@ The major concerns are: setting up the `deploy` user account, getting a ruby ins
 You can read through those playbooks to see what they do.
 The `authorized_key` directive copies an SSH key *from the local machine*.
 The `file` and `template` directives look in the `file` and `template` directories of that role, respectively, for the files or templates listed.
+There is a bit of webscraping going on the with `curl` command to ensure the latest version of mod_rails is installed.
 
 4) The database is set up.
-This is a very standard MySQL setup, installing requisite packages, setting up user accounts and ensuring databases are created.
+This is a standard MySQL setup, installing requisite packages, setting up user accounts and ensuring databases are created.
 If you made it through the webserver playbooks this should be a piece of cake.
 
-# Notes
+### Notes
 
 You will notice, especially for setting up RVM, Ruby, and Passenger, that I use the `shell` module quite a bit, which seems to defeat the purpose of using idempotent modules because it simply executes whatever command is passed to it.
 However, I strive to make them more robust (and not repeat themselves unnecessarilty) by using the `creates` option, which specifies a file or folder that should be created by the command.
 It is that trick which really differentiates that setup from a shell script.
 Yes, you could say that checking for folders' existence in the shell script is the same, but someone who doesn't know bashscript can read this and understand what it means.
+
+## Order of playbook operations for `shop-data-sync.yml`
+
+This file has far fewer things to do, so it made more sense to me to treat it as more of a script than a constellation of configuration files.
+
+1) On the production server, this file:
+    * performs a mysqldump of the current production data, timestamped by today's date
+    * pulls that database to a local directory using the `synchronize` module (which is just a wrapper around the `rsync` command line utility)
+    * pulls the product images to the local machine in the same manner as the database dump
+
+2) On the non-production servers, as the unprivileged `deploy` user:
+    * copies the database dump to the VM
+    * imports the mysqldump file to update the database with the most current data
+    * syncs production images to remote
+
+3) On the non-production servers, as a privileged user (`leggers`, in this case):
+    * symlinks the site configuration file, enabling it according to apache, recording the result
+    * if the file had previously not been symlinked (i.e. site is enabled for the first time), restarts and reloads apache so it will begin serving the site
