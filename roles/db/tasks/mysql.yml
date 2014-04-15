@@ -1,5 +1,5 @@
 ---
-# inspiration from here: https://gist.github.com/ihassin/8106956
+# inspiration from here: https://gist.github.com/ihassin/8106956 and https://github.com/Ansibles/mysql
 - name: Install mySQL
   apt: pkg={{item}}
   with_items:
@@ -36,10 +36,19 @@
     - 127.0.0.1
     - ::1
     - localhost
+  when: ansible_hostname != 'localhost'
+
+- name: set root user's password
+  mysql_user: name=root password={{mysql_root_password}} host={{item}}
+  with_items:
+    - 127.0.0.1
+    - ::1
+    - localhost
+  when: ansible_hostname == 'localhost'
 
   # see http://docs.ansible.com/mysql_user_module.html
-- name: copy over .my.cnf for ansible idempotency
-  template: src=.my.cnf.j2 dest=~/.my.cnf
+- name: copy over .my.cnf for root user for ansible idempotency
+  template: src=.my.cnf.j2 dest=/root/.my.cnf owner=root group=root mode=0600
 
 - name: copy over .my.cnf for deploy user so ansible can connect to database with that user
-  template: src=.my.cnf.j2 dest=/home/deploy/.my.cnf
+  template: src=.my.cnf.j2 dest=/home/deploy/.my.cnf owner=deploy group=deploy mode=0600
