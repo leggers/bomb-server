@@ -14,7 +14,7 @@
       synchronize: mode=pull dest=~/work/bombsheller/bomb_store/public src=/var/www/shop/shared/public/spree delete=yes
 
 
-- hosts: development
+- hosts: non-production
   vars_files:
     - group_vars/use-deploy-ssh-user.yml
   tasks:
@@ -27,7 +27,7 @@
     - name: sync production images to remote
       synchronize: mode=push src=~/work/bombsheller/bomb_store/public/spree dest=/var/www/shop/shared/public delete=yes
 
-- hosts: development
+- hosts: non-production
   vars_files:
     - group_vars/use-leggers-ssh-user.yml
   tasks:
