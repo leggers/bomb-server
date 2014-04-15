@@ -13,7 +13,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "chef/ubuntu-13.10-i386"
 
   config.vm.provider "virtualbox" do |v|
-    v.memory = 768
+    v.memory = 1024
     v.cpus = 2
   end
 
