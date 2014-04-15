@@ -1,5 +1,0 @@
----
-# File: group_vars/vagrant
-
-ansible_ssh_user: vagrant
-rails_env: development
