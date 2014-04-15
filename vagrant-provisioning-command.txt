@@ -1,0 +1,1 @@
+ansible-playbook -i .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory --private-key=~/.vagrant.d/insecure_private_key -u vagrant site.yml --vault-password-file=~/.ansible_vault_pass.txt --extra-vars "rails_env=development" -vvvv
