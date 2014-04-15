@@ -54,11 +54,5 @@
     - restart apache
     - reload apache
 
-# - name: Ensure application apache config files are symlinked (if code is there)
-#   file: src=/etc/apache2/sites-available/{{item}}.conf dest=/etc/apache2/sites-enabled/{{item}}.conf state=link
-#   with_items: app_names
-#   notify:
-#     - reload apache
-
 - name: Ensure default apache site is disabled
   file: dest=/etc/apache2/sites-enabled/000-default.conf state=absent
