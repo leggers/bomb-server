@@ -1,0 +1,5 @@
+---
+# file: use-leggers-ssh-user.yml
+# this file exists for the sole purpose of using a user with passwordless sudo to enable the site
+
+ansible_ssh_user: leggers

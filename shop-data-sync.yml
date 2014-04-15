@@ -11,20 +11,37 @@
       synchronize: mode=pull dest=~/work/bombsheller/sql_dumps/prod_dump_{{ansible_date_time.date}}.sql src=/home/leggers/prod_dump_{{ansible_date_time.date}}.sql
 
     - name: sync product images to local
-      synchronize: mode=pull dest=~/work/bombsheller/bomb_store/public/spree src=/var/www/shop/shared/public/spree
+      synchronize: mode=pull dest=~/work/bombsheller/bomb_store/public src=/var/www/shop/shared/public/spree delete=yes
 
 
-- hosts: non-production
+- hosts: development
+  vars_files:
+    - group_vars/use-deploy-ssh-user.yml
   tasks:
     - name: copy database dump to remote
       copy: src=~/work/bombsheller/sql_dumps/prod_dump_{{ansible_date_time.date}}.sql dest=/home/deploy/sql_dumps/prod_dump_{{ansible_date_time.date}}.sql owner=deploy group=deploy
-      remote_user: deploy
 
     - name: import data into remote database
-      mysql_db: name=bomb_shop_{{group_names[0]}} state=import target=/home/deploy/sql_dumps/prod_dump_{{ansible_date_time.date}}.sql login_user=root login_password=omglegggings
+      shell: mysql bomb_shop_{{group_names[0]}} < /home/deploy/sql_dumps/prod_dump_{{ansible_date_time.date}}.sql
 
     - name: sync production images to remote
-      synchronize: mode=push src=~/work/bombsheller/bomb_store/public/spree dest=/var/www/shop/shared/public
+      synchronize: mode=push src=~/work/bombsheller/bomb_store/public/spree dest=/var/www/shop/shared/public delete=yes
 
+- hosts: development
+  vars_files:
+    - group_vars/use-leggers-ssh-user.yml
+  tasks:
     - name: enable site
-      file: state=link src=/etc/apache2/sites-available/shop.conf dest=/etc/apach2/sites-enabled/shop.conf
+      file: state=link src=/etc/apache2/sites-available/shop.conf dest=/etc/apache2/sites-enabled/shop.conf
+      sudo: yes
+      register: link_created
+
+    - name: restart apache if link created
+      service: name=apache2 state=restarted
+      sudo: yes
+      when: link_created.changed
+
+    - name: reload apache2 if link created
+      service: name=apache2 state=reloaded
+      sudo: yes
+      when: link_created.changed
