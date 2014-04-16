@@ -13,18 +13,19 @@
   group: name=deploy
 
 - name: Create deployment user
-  user: name=deploy group=deploy comment="Application deployment user"
+  user: name=deploy group=deploy comment="Application deployment user" shell=/bin/bash
 
-- authorized_key: user=deploy key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+- name: add Lucas's key for deploy user
+  authorized_key: user=deploy key="{{ lookup('file', '/Users/leggers/work/bombsheller/authorized-keys/lucas') }}"
+
+- name: add Pablos's key for deploy user
+  authorized_key: user=deploy key="{{ lookup('file', '/Users/leggers/work/bombsheller/authorized-keys/pablos') }}"
 
 - name: Deploy user's bashrc
   template: dest=/home/deploy/.bashrc src=bashrc.j2 owner=deploy group=deploy
 
 - name: Deploy user's bash_profile
   copy: dest=/home/deploy/.bash_profile src=bash_profile.txt owner=deploy group=deploy
-
-- name: Deploy user use bash
-  shell: chsh -s {{ansible_env.SHELL}} deploy
 
 - name: Create deployment directory
   file: path={{deploy_directory}}/{{item}} owner=deploy group=deploy state=directory
