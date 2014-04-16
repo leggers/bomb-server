@@ -1,0 +1,21 @@
+---
+# file setup-server-users.yml
+# sets up user accounts and authorized ssh keys for some peeps
+
+- hosts: non-production
+  sudo: yes
+  tasks:
+    - name: Ensure Pablos has an account and is in the sudo'ers group
+      user: name=pablos group=sudo append=true shell=/bin/bash update_password=on_create
+
+    - name: add Pablos's key
+      authorized_key: user=pablos key="{{ lookup('file', '/Users/leggers/work/bombsheller/authorized-keys/pablos') }}"
+
+    - name: Ensure Arielle and Anna have user accounts
+      user: name={{item}} shell=/bin/bash update_password=on_create
+      with_items:
+        - anna
+        - arielle
+
+    - name: add Arielle's key
+      authorized_key: user=arielle key="{{ lookup('file', '/Users/leggers/work/bombsheller/authorized-keys/arielle') }}"
