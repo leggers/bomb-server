@@ -1,5 +1,5 @@
 <VirtualHost *:80>
-    ServerAlias {{group_names[0]}}{{item}}.bombsheller.com
+    ServerAlias {{group_names[1]}}{{item}}.bombsheller.com
     DocumentRoot /var/www/{{item}}/current/public/
     ErrorLog /var/log/apache2/{{item}}/error.log
     CustomLog /var/log/apache2/{{item}}/access.log combined

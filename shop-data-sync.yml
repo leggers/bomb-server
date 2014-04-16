@@ -21,10 +21,11 @@
       copy: src=~/work/bombsheller/sql_dumps/prod_dump_{{ansible_date_time.date}}.sql dest=/home/deploy/sql_dumps/prod_dump_{{ansible_date_time.date}}.sql owner=deploy group=deploy
 
     - name: import data into remote database
-      shell: mysql bomb_shop_{{group_names[0]}} < /home/deploy/sql_dumps/prod_dump_{{ansible_date_time.date}}.sql
+      shell: mysql bomb_shop_{{group_names[1]}} < /home/deploy/sql_dumps/prod_dump_{{ansible_date_time.date}}.sql
 
     - name: sync production images to remote
       synchronize: mode=push src=~/work/bombsheller/bomb_store/public/spree dest=/var/www/shop/shared/public delete=yes
+      remote_user: deploy
 
 - hosts: non-production
   sudo: yes
