@@ -13,7 +13,6 @@
     - name: sync product images to local
       synchronize: mode=pull dest=~/work/bombsheller/bomb_store/public src=/var/www/shop/shared/public/spree delete=yes
 
-
 - hosts: non-production
   vars_files:
     - group_vars/use-deploy-ssh-user.yml
@@ -28,20 +27,18 @@
       synchronize: mode=push src=~/work/bombsheller/bomb_store/public/spree dest=/var/www/shop/shared/public delete=yes
 
 - hosts: non-production
+  sudo: yes
   vars_files:
     - group_vars/use-leggers-ssh-user.yml
   tasks:
     - name: enable site
       file: state=link src=/etc/apache2/sites-available/shop.conf dest=/etc/apache2/sites-enabled/shop.conf
-      sudo: yes
       register: link_created
 
     - name: restart apache if link created
       service: name=apache2 state=restarted
-      sudo: yes
       when: link_created.changed
 
     - name: reload apache2 if link created
       service: name=apache2 state=reloaded
-      sudo: yes
       when: link_created.changed
