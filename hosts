@@ -4,7 +4,7 @@ alien.bombsheller.com
 [staging]
 eglantine.bombsheller.com
 
-[development]
+[dev]
 titica.bombsheller.com
 
 [ungrouped] # actually vagrant, but called ungrouped to make database import work
@@ -12,4 +12,4 @@ titica.bombsheller.com
 
 [non-production:children]
 staging
-development
+dev
