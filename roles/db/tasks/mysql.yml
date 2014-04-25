@@ -26,7 +26,7 @@
     - localhost
 
 - name: Setup databases
-  mysql_db: name=bomb_{{item}}_{{group_names[1]}} state=present
+  mysql_db: name=bomb_{{item}}_{{rails_env}} state=present
   with_items: app_names
 
 - name: set root user's password
