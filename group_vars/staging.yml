@@ -1,0 +1,4 @@
+---
+# file: group_vars/staging
+
+rails_env: production

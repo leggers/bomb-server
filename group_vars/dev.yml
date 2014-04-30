@@ -1,0 +1,4 @@
+---
+# file: group_vars/dev
+
+rails_env: development
