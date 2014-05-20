@@ -16,8 +16,14 @@ I wrote this to set up [Bombsheller's](http://shop.bombsheller.com/) VMs.
 
 ## Installation
 
-* [Ansible installation docs](http://docs.ansible.com/intro_installation.html). I recommend installing using pip because it was easy. During installation I encountered a strange error with a mangled printline. I eventually found out that this was due to Windows carriage returns in the code. To fix this I used a [dos2unix](http://linuxcommand.org/man_pages/dos2unix1.html) on the files that threw the errors.
-* Clone the repository.
+To install Ansible, use the [Ansible installation docs](http://docs.ansible.com/intro_installation.html).
+I recommend installing using pip because it was easy.
+During installation I encountered a strange error with a mangled printline.
+I eventually found out that this was due to Windows carriage returns in the code.
+To fix this I used a [dos2unix](http://linuxcommand.org/man_pages/dos2unix1.html) on the files that threw the errors.
+Alternatively, you could open the offending files with `vi` and follow [this tip](http://stackoverflow.com/questions/82726/convert-dos-line-endings-to-linux-line-endings-in-vim).
+
+Clone this repository.
 
 ## Use
 
