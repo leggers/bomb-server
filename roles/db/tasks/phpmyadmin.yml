@@ -1,0 +1,9 @@
+---
+# inspiration from https://www.digitalocean.com/community/articles/how-to-install-and-secure-phpmyadmin-on-ubuntu-14-04
+
+- name: Install PHP
+  apt: pkg={{item}}
+  with_items:
+    -php5
+    -libapache2-mod-php5
+    -php5-mcrypt
