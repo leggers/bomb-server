@@ -12,6 +12,28 @@ There is nothing particularly notable about this server setup for production Rai
 The only setup required on the server is Ubuntu 13.10 with a user to which one can SSH that has password-less sudo privileges.
 I wrote this to set up [Bombsheller's](http://shop.bombsheller.com/) VMs.
 
+# Installation and Use
+
+## Installation
+
+* [Ansible installation docs](http://docs.ansible.com/intro_installation.html). I recommend installing using pip because it was easy. During installation I encountered a strange error with a mangled printline. I eventually found out that this was due to Windows carriage returns in the code. To fix this I used a [dos2unix](http://linuxcommand.org/man_pages/dos2unix1.html) on the files that threw the errors.
+* Clone the repository.
+
+## Use
+
+There are two playbooks, as explained below, with distinct uses.
+One playbook sets up VMs to host and serve the site.
+It installs all application dependencies and puts in place database secrets and other configuration files.
+To use it, you need to have SSH access to a user with password-less sudo privileges (to install everything) and the Ansible Vault password (for database secrets).
+The command is `ansible-playbook site.yml -i hosts -l <group_name>` where `<group_name>` is replaced by `staging` or `production`, for example.
+You will also have to supply the Ansible Vault password, which Ansible will prompt you for upon running that comand.
+
+The other playbook acts as a data synchronizing script.
+It `mysqldump`s the `production` database, `rsync`s it to the local machine, rsync's the store's photos locally, then syncs them to the `staging` and `develop` environments.
+To use it, you need to have SSH access to all three boxes's `deploy` user (or just `production`'s if you're only pulling to local machine).
+The command is `ansible-playbook -i hosts shop-data-sync.yml`.
+Because it moves data between hosts, you do not want to specify a specific group.
+
 # Overview and Ansible Background
 
 First, a short overview of how playbooks work (you can read more about them [in their documentation](http://docs.ansible.com/playbooks.html)):
