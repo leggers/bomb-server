@@ -2,7 +2,7 @@
   sudo: yes
   vars_files:
     - group_vars/all.yml
-    - group_vars/db-data.yml
+    - group_vars/secrets.yml
 
   roles:
     - common

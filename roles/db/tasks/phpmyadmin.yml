@@ -1,13 +1,26 @@
 ---
 # inspiration from https://www.digitalocean.com/community/articles/how-to-install-and-secure-phpmyadmin-on-ubuntu-14-04
 
-- name: Install PHP and phpMyAdmin
+- name: Install PHP and phpMyAdmin requirements
   apt: pkg={{item}}
   with_items:
     - php5
     - libapache2-mod-php5
     - php5-mcrypt
     - phpmyadmin
+    - python-passlib
+    - apache2-utils
+
+- name: Allow securing of phpMyAdmin
+  lineinfile: insertafter='index.php' line='        AllowOverride All' dest=/etc/phpmyadmin/apache.conf
+
+- name: Add htaccess rules
+  copy: src=htaccess dest=/usr/share/phpmyadmin/.htaccess
+
+- name: Add htaccess login for Pablos
+  htpasswd: path=/etc/apache2/.htpasswd name={{htname}} password={{htpass}}
+  notify:
+    - restart apache
 
 - name: Link phpMyAdmin apache config file
   file: state=link src=/etc/phpmyadmin/apache.conf dest=/etc/apache2/conf-enabled/phpmyadmin.conf
