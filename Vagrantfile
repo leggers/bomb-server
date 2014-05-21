@@ -41,5 +41,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     ansible.extra_vars = {
       rails_env: 'development'
     }
+    ansible.vault_password_file = '~/.ansible_vault_pass.txt'
+    ansible.host_key_checking = false
   end
 end

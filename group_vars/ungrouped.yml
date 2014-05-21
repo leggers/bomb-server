@@ -1,5 +1,5 @@
 ---
 # File: group_vars/ungrouped
 
-ansible_ssh_user: deploy
+# ansible_ssh_user: vagrant
 rails_env: development
