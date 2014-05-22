@@ -13,9 +13,18 @@
 
 - name: Allow securing of phpMyAdmin
   lineinfile: insertafter='index.php' line='        AllowOverride All' dest=/etc/phpmyadmin/apache.conf
+  notify:
+    - restart apache
+
+- name: Don't let phusion passenger serve phpMyAdmin
+  lineinfile: insertafter='AllowOverride All' line='        PassengerEnabled off' dest=/etc/phpmyadmin/apache.conf
+  notify:
+    - restart apache
 
 - name: Add htaccess rules
   copy: src=htaccess dest=/usr/share/phpmyadmin/.htaccess
+  notify:
+    - restart apache
 
 - name: Add htaccess login for Pablos
   htpasswd: path=/etc/apache2/.htpasswd name={{htname}} password={{htpass}}
