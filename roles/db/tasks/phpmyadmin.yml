@@ -11,6 +11,14 @@
     - python-passlib
     - apache2-utils
 
+- name: Link php mcrypt module
+  file: state=link src=/etc/php5/conf.d/mcrypt.ini dest=/etc/php5/mods-available/mcrypt.ini
+  notify:
+    - restart apache
+
+- name: Enable php mcrypt module
+  command: php5enmod mcrypt
+
 - name: Allow securing of phpMyAdmin
   lineinfile: insertafter='index.php' line='        AllowOverride All' dest=/etc/phpmyadmin/apache.conf
   notify:
@@ -30,6 +38,18 @@
   htpasswd: path=/etc/apache2/.htpasswd name={{htname}} password={{htpass}}
   notify:
     - restart apache
+
+- name: Setup phpMyAdmin tables
+  shell: zcat /usr/share/doc/phpmyadmin/examples/create_tables.sql.gz | mysql -u root -p{{mysql_root_password}}
+
+- name: Change database table names in config file
+  shell: sed -i -e 's/\(pma_\)\([a-z]\)/\1_\2/g' /etc/phpmyadmin/config.inc.php
+
+- name: Create phpmyadmin user and grant proper privileges
+  mysql_user: name=phpmyadmin password={{pmapass}} priv=phpmyadmin.*:ALL,GRANT
+
+- name: Set phpMyAdmin db user password in config file
+  lineinfile: dest=/etc/phpmyadmin/config-db.php regexp='$dbpass' line="$dbpass='{{pmapass}}';"
 
 - name: Link phpMyAdmin apache config file
   file: state=link src=/etc/phpmyadmin/apache.conf dest=/etc/apache2/conf-enabled/phpmyadmin.conf
