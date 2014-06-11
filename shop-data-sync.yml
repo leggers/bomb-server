@@ -6,9 +6,11 @@
   tasks:
     - name: sqldump production database
       mysql_db: name=bomb_shop_production state=dump target=/home/deploy/sql_dumps/prod_dump_{{ansible_date_time.date}}.sql
+      sudo: yes
 
     - name: sync db dump to local
       synchronize: mode=pull dest=~/work/bombsheller/sql_dumps/prod_dump_{{ansible_date_time.date}}.sql src=/home/deploy/sql_dumps/prod_dump_{{ansible_date_time.date}}.sql
+      sudo: yes
 
     - name: sync product images to local
       synchronize: mode=pull dest=~/work/bombsheller/bomb_store/public src=/var/www/shop/shared/public/spree delete=yes

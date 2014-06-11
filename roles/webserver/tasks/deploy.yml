@@ -8,6 +8,7 @@
   with_items:
     - nodejs
     - imagemagick
+    - keychain
 
 - name: Create deployment group
   group: name=deploy
