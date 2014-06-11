@@ -9,24 +9,24 @@
       sudo: yes
 
     - name: sync db dump to local
-      synchronize: mode=pull dest=~/work/bombsheller/sql_dumps/prod_dump_{{ansible_date_time.date}}.sql src=/home/deploy/sql_dumps/prod_dump_{{ansible_date_time.date}}.sql
+      synchronize: mode=pull dest={{bombsheller_folder}}/sql_dumps/prod_dump_{{ansible_date_time.date}}.sql src=/home/deploy/sql_dumps/prod_dump_{{ansible_date_time.date}}.sql
       sudo: yes
 
     - name: sync product images to local
-      synchronize: mode=pull dest=~/work/bombsheller/bomb_store/public src=/var/www/shop/shared/public/spree delete=yes
+      synchronize: mode=pull dest={{bombsheller_folder}}/bomb_store/public src=/var/www/shop/shared/public/spree delete=yes
 
 - hosts: non-production
   vars_files:
     - group_vars/use-deploy-ssh-user.yml
   tasks:
     - name: copy database dump to remote
-      copy: src=~/work/bombsheller/sql_dumps/prod_dump_{{ansible_date_time.date}}.sql dest=/home/deploy/sql_dumps/prod_dump_{{ansible_date_time.date}}.sql owner=deploy group=deploy
+      copy: src={{bombsheller_folder}}/sql_dumps/prod_dump_{{ansible_date_time.date}}.sql dest=/home/deploy/sql_dumps/prod_dump_{{ansible_date_time.date}}.sql owner=deploy group=deploy
 
     - name: import data into remote database
       shell: mysql bomb_shop_{{rails_env}} < /home/deploy/sql_dumps/prod_dump_{{ansible_date_time.date}}.sql
 
     - name: sync production images to remote
-      synchronize: mode=push src=~/work/bombsheller/bomb_store/public/spree dest=/var/www/shop/shared/public delete=yes
+      synchronize: mode=push src={{bombsheller_folder}}/bomb_store/public/spree dest=/var/www/shop/shared/public delete=yes
       remote_user: deploy
 
 - hosts: non-production
