@@ -31,8 +31,6 @@
 
 - hosts: non-production
   sudo: yes
-  vars_files:
-    - group_vars/use-leggers-ssh-user.yml
   tasks:
     - name: enable site
       file: state=link src=/etc/apache2/sites-available/shop.conf dest=/etc/apache2/sites-enabled/shop.conf

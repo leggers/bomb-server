@@ -35,9 +35,9 @@ The command is `ansible-playbook site.yml -i hosts -l <group_name>` where `<grou
 You will also have to supply the Ansible Vault password, which Ansible will prompt you for upon running that comand.
 
 The other playbook acts as a data synchronizing script.
-It `mysqldump`s the `production` database, `rsync`s it to the local machine, rsync's the store's photos locally, then syncs them to the `staging` and `develop` environments.
-To use it, you need to have SSH access to all three boxes's `deploy` user (or just `production`'s if you're only pulling to local machine).
-The command is `ansible-playbook -i hosts shop-data-sync.yml`.
+It `mysqldump`s the `production` database, `rsync`s it to the local machine (you need a folder called `sql_dumps` in your local bombsheller directory!), rsync's the store's photos locally, then syncs them to the `staging` and `develop` environments.
+To use it, you need to have SSH access to a user with passwordless sudo on the `production` server and `deploy` on non-production servers.
+The command is `ansible-playbook -i hosts shop-data-sync.yml -u <your passwordless sudo ssh username> --extra-vars "bombsheller_folder=<your local bombsheller directory>`.
 Because it moves data between hosts, you do not want to specify a specific group.
 
 # Overview and Ansible Background
@@ -75,7 +75,7 @@ There are two playbooks which encapsulate distinct tasks:
 How to use the playbooks:
 1) `ansible-playbook site.yml -i hosts -l staging`.
 In English, this says "Ansible, run the playbook in `site.yml` against the hosts listed in the file `hosts` in the group `staging`."
-2) `ansible-playbook -i hosts shop-data-sync.yml`
+2) `ansible-playbook -i hosts shop-data-sync.yml -u <your passwordless sudo ssh username> --extra-vars "bombsheller_folder=<your local bombsheller directory>`
 This says to run the `shop-data-sync.yml` playbook against all hosts in the hosts file.
 If you look in the playbook you will see how it handles switching between the produciton and non-production hosts.
 
