@@ -22,6 +22,9 @@
 - name: add Pablos's key for deploy user
   authorized_key: user=deploy key="{{ lookup('file', '/Users/leggers/work/bombsheller/authorized-keys/pablos') }}"
 
+- name: add Arielle's key for deploy user
+  authorized_key: user=deploy key="{{ lookup('file', '/Users/leggers/work/bombsheller/authorized-keys/arielle') }}"
+
 - name: Deploy user's bashrc
   template: dest=/home/deploy/.bashrc src=bashrc.j2 owner=deploy group=deploy
 

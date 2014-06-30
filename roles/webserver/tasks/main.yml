@@ -1,3 +1,8 @@
 - include: deploy.yml
 - include: ruby.yml
 - include: apache-passenger.yml
+
+- name: Deploy user use ssh-agent
+  remote_user: deploy
+  sudo: no
+  lineinfile: dest=~/.bashrc line='if [ -z "$SSH_AUTH_SOCK" ] ; then eval `ssh-agent -s` ; fi'

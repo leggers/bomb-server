@@ -109,9 +109,5 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
-if [ -z "$SSH_AUTH_SOCK" ] ; then
-    eval `ssh-agent -s`
-fi
-
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 PATH=$HOME/.rvm/gems/ruby-{{ruby}}/bin:$HOME/.rvm/gems/ruby-{{ruby}}@global/bin:$HOME/.rvm/rubies/ruby-{{ruby}}/bin:$PATH # Add RVM ruby directories (in proper order) correct gem command is used
