@@ -55,7 +55,7 @@
     - reload apache
 
 - name: Ensure SSL cert directory is present
-  file path=/etc/apache2/certs state=directory
+  file: path=/etc/apache2/certs state=directory
 
 - name: Ensure SSL files are present
   copy: dest=/etc/apache2/certs/{{item}} src={{item}} owner=root
