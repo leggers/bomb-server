@@ -9,6 +9,7 @@
     - nodejs
     - imagemagick
     - keychain
+    - libmagickwand-dev
 
 - name: Create deployment group
   group: name=deploy

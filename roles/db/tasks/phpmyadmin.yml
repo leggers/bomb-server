@@ -11,11 +11,6 @@
     - python-passlib
     - apache2-utils
 
-- name: Link php mcrypt module
-  file: state=link src=/etc/php5/conf.d/mcrypt.ini dest=/etc/php5/mods-available/mcrypt.ini
-  notify:
-    - restart apache
-
 - name: Enable php mcrypt module
   command: php5enmod mcrypt
 
@@ -52,7 +47,7 @@
   lineinfile: dest=/etc/phpmyadmin/config-db.php regexp='$dbpass' line="$dbpass='{{pmapass}}';"
 
 - name: Link phpMyAdmin apache config file
-  file: state=link dest=/etc/phpmyadmin/apache.conf src=/etc/apache2/conf-enabled/phpmyadmin.conf
+  file: state=link src=/etc/phpmyadmin/apache.conf dest=/etc/apache2/conf-enabled/phpmyadmin.conf
   notify:
     - reload apache
     - restart apache
