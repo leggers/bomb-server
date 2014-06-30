@@ -52,7 +52,7 @@
   lineinfile: dest=/etc/phpmyadmin/config-db.php regexp='$dbpass' line="$dbpass='{{pmapass}}';"
 
 - name: Link phpMyAdmin apache config file
-  file: state=link src=/etc/phpmyadmin/apache.conf dest=/etc/apache2/conf-enabled/phpmyadmin.conf
+  file: state=link dest=/etc/phpmyadmin/apache.conf src=/etc/apache2/conf-enabled/phpmyadmin.conf
   notify:
     - reload apache
     - restart apache
