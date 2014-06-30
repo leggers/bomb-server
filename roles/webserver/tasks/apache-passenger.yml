@@ -54,5 +54,22 @@
     - restart apache
     - reload apache
 
+- name: Ensure SSL cert directory is present
+  file path=/etc/apache2/certs state=directory
+
+- name: Ensure SSL files are present
+  copy: dest=/etc/apache2/certs/{{item}} src={{item}} owner=root
+  with_items: [ bombsheller.com.key.pem, STAR_bombsheller_com.ca-bundle, wildcard.bombsheller.com.cert_20140506.pem ]
+  notify:
+    - restart apache
+    - reload apache
+
+- name: Ensure SSL is configured
+  template: dest=/etc/apache2/sites-available/{{item}}-ssl.conf src=ssl-config.j2
+  with_items: app_names
+  notify:
+    - restart apache
+    - reload apache
+
 - name: Ensure default apache site is disabled
   file: dest=/etc/apache2/sites-enabled/000-default.conf state=absent

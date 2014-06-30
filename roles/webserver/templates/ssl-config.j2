@@ -1,0 +1,19 @@
+<VirtualHost _default_:443>
+    ServerAlias {{group_names[1]|default('prod')}}{{item}}.bombsheller.com
+    DocumentRoot /var/www/{{item}}/current/public/
+    ErrorLog /var/log/apache2/{{item}}/error.log
+    CustomLog /var/log/apache2/{{item}}/access.log combined
+    <Directory /var/www/{{item}}/current/public>
+        RailsEnv {{rails_env}}
+        AllowOverride all
+        Options -MultiViews
+        Order allow,deny
+        Allow from all
+    </Directory>
+
+     SSLEngine on
+     SSLCertificateFile /etc/apache2/certs/wildcard.bombsheller.com.cert_20140506.pem
+     SSLCertificateKeyFile /etc/apache2/certs/bombsheller.com.key.pem
+     SSLCACertificateFile /etc/apache2/certs/STAR_bombsheller_com.ca-bundle
+
+</VirtualHost>
