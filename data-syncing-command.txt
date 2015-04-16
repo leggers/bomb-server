@@ -1,0 +1,1 @@
+ansible-playbook shop-data-sync.yml -i hosts -u <your ssh user> --extra-vars "bombsheller_folder=<path to local bombsheller directory>"
